@@ -4,11 +4,12 @@ import unittest
 import sys
 import json
 
-from ddt import ddt, data, unpack
+import ddt
 
 sys.path.append("../../ui-test")
 sys.path.append("../..")
 sys.path.append("../../")
+
 from common import ui_common as C
 from ui_test.page import LoginClass, AdminHomeMenu, HomeMenuClass
 
@@ -29,16 +30,32 @@ class TestCaseInfo(object):
         self.info = error_info
 
 
-@ddt
+def readfile():
+    with open('user.json', 'r', encoding='utf-8') as f:
+        # user_data = []
+        result = json.load(f)
+        # for i in result:
+        #     user_data.append((i.get('username'), i.get('password'), i.get('expect')))
+        # print(user_data)
+        return result
+
+
+@ddt.ddt
 class test_org_admin_login(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.base_url = C.base_url()
         self.testCaseInfo = TestCaseInfo()
         self.driver.maximize_window()
-        self.current_window_handle
 
-    def test_org_administrator_login(self):
+    # def read(self, username, password, expect):
+    #     print(username, password, expect)
+    #     return username, password, expect
+
+    @ddt.file_data('./user.json')
+    @ddt.unpack
+    def test_org_administrator_login(self, username, password, expect):
+        print(username, password, expect)
         try:
             self.testCaseInfo.start = C.current_time()
             # 打开网页
@@ -49,33 +66,23 @@ class test_org_admin_login(unittest.TestCase):
             # 点击刷新验证码
             login_page.update()
 
-            # 读取json数据
-            def readfile():
-                with open('user.json', 'r', encoding='utf-8') as f:
-                    result = json.load(f)
-                    return result
-
-            @data(*readfile())
-            @unpack
-            def read(user, pwd):
-                return user, pwd
-
-            login_page.set_userinfo(read)
+            login_page.set_userinfo(username, password)
             # login_page.set_password('Unity@123')
             # 获取验证码
             get_verify = login_page.image_str()
+            time.sleep(3)
             # 写入验证码
             login_page.set_verify(get_verify)
 
-            time.sleep(10)
-            # 获取当前窗口句柄，判断是否成功登录
-            current_handle = self.current_window_handle
-            Login = login_page.sign(current_handle)
+            time.sleep(5)
+            # 获取当前窗口url，判断是否成功登录
+            c_url = self.driver.current_url
+            Login = login_page.sign(c_url)
 
             # login_page.skip_click()
 
             # 断言返回结果确定登录状态
-            self.assertEqual('True', Login)
+            self.assertEqual(expect, Login)
 
             home_menu = HomeMenuClass.HomeMenuClass(self.driver)
             home_menu.init_page()
@@ -110,8 +117,8 @@ class test_Platform_admin_login(unittest.TestCase):
             login_page.init_page()
 
             logger.info("Login web with aaronpeng")
-            login_page.set_username('ranmeng')
-            login_page.set_password('Unity@123@')
+            login_page.set_userinfo('ranmeng', 'Unity@123')
+            # login_page.set_password('Unity@123@')
 
             time.sleep(10)
             # login_page.sign()

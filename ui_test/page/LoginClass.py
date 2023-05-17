@@ -5,9 +5,10 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 import re
 import pytesseract
-import pillow
+
 from PIL import Image
 import time
+
 
 class LoginClass(BasePage):
     # 定位元素
@@ -16,33 +17,18 @@ class LoginClass(BasePage):
     sign_in = '//*[@id="app"]/div/div[2]/div/form/button'
     skip_button = '//*[@id="app"]/div/div[2]/div/form/div[3]/button'
     verify = '//*[@id="app"]/div/div[2]/div/form/div[3]/div/div/div[1]/div/input'
-    update_verify = '//*[@id="app"]/div/div[2]/div/form/div[3]/div/div/div[1]/div/span/span/i/svg'
-
-
+    update_verify = '//*[@id="app"]/div/div[2]/div/form/div[3]/div/div/div[1]/div/span/span'
 
     def init_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
             (By.XPATH, self.username)))
 
-
-
-
-
-    # 设置用户名
-    # def set_username(self, username):
-    #     name = self.driver.find_element(By.XPATH, self.username)
-    #     name.send_keys(username)
-    #
-    # # 输入密码
-    # def set_password(self, pwd):
-    #     password = self.driver.find_element(By.XPATH, self.password)
-    #     password.send_keys(pwd)
-
     def set_userinfo(self, username, pwd):
-          name = self.driver.find_element(By.XPATH, self.username)
-          password = self.driver.find_element(By.XPATH, self.password)
-          name.send_keys(username)
-          password.send_keys(pwd)
+
+        name = self.driver.find_element(By.XPATH, self.username)
+        password = self.driver.find_element(By.XPATH, self.password)
+        name.send_keys(username)
+        password.send_keys(pwd)
 
     # 输入验证码
     def set_verify(self, verify):
@@ -126,28 +112,25 @@ class LoginClass(BasePage):
 
     # 更新验证码
     def update(self):
-        update_ver = self.driver.find_element(By.XPATH,self.update_verify)
+        update_ver = self.driver.find_element(By.XPATH, self.update_verify)
         update_ver.click()
 
     # 提交登录
-    def sign(self, current_handle):
+    def sign(self, c_url):
         submit = self.driver.find_element(By.XPATH, self.sign_in)
         submit.click()
-        time.sleep(3)
-        handles = self.driver.windows_handles
-        # 遍历所有窗口，找到新开的窗口
-        for handle in handles:
-            if handle != current_handle:
-                new_handle = handle
-                break
-    #     比较两个窗口句柄是否一致
-        if new_handle != current_handle:
+        time.sleep(4)
+        new_url = self.driver.current_url
+        # # 遍历所有窗口，找到新开的窗口
+        # for handle in handles:
+        #     if handle != current_handle:
+        #         new_handle = handle
+        #         break
+        # #     比较两个窗口句柄是否一致
+        if new_url != c_url:
             return True
         else:
             return False
-
-
-
 
     def skip_click(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
