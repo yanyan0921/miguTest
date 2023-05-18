@@ -42,8 +42,8 @@ class AccountManagePage(BasePage):
         new_account_link_button.click()
 
         # 等待输入开发者账号输入框的出现，点击输入开发者账号，选中目标开发者账号，点击关联按钮
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.dev_account_input)))
-        dev_account_input = self.driver.find_element(By.XPATH,self.dev_account_input)
+        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH, self.dev_account_input)))
+        dev_account_input = self.driver.find_element(By.XPATH, self.dev_account_input)
         dev_account_input.click()    
         time.sleep(3)
         dev_account_input.send_keys(dev_account)
@@ -51,7 +51,7 @@ class AccountManagePage(BasePage):
         # 点击下拉框账号选择关联对象
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
             (By.XPATH, self.dev_account)))
-        dev_account = self.driver.find_element(By.XPATH,self.dev_account)
+        dev_account = self.driver.find_element(By.XPATH, self.dev_account)
         dev_account.click()
 
         link_button = self.driver.find_element(By.XPATH,self.link_button)

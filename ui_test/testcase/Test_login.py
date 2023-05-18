@@ -145,4 +145,4 @@ if __name__ == "__main__":
     suite.addTest(test_Platform_admin_login("test_org_administrator_login"))
     # 执行测试
     runner = unittest.TextTestRunner()
-    runner.run()
+    runner.run(suite)
