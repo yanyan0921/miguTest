@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import logging
+from ui_test.page import OrgPageClass
 
 logger = logging.getLogger("main")
 logger.setLevel(level=logging.INFO)
@@ -11,6 +12,7 @@ logger.setLevel(level=logging.INFO)
 
 class OrgInfoPage(BasePage):
     # 定位元素
+
     save_modify_button = '//*[@id="app"]/section/section/main/div[2]/div/h2/div[2]/button[2]'
     new_org_admin_button = '//*[@id="pane-orgInfo"]/div[1]/div[1]/div/button'
     add_org_admin_name_txt = '//*[@id="pane-orgInfo"]/div[2]/div/div/div[2]/div/form/div/div/div[2]/div/div/input'
@@ -18,8 +20,8 @@ class OrgInfoPage(BasePage):
     link_button = '//*[@id="pane-orgInfo"]/div[2]/div/div/div[3]/span/button[2]'
     link_admin_success_message = "//p[contains(text(),'添加组织管理员成功！')]"
     org_name_txt = '//*[@id="pane-orgInfo"]/div[1]/div[2]/form/div[1]/div/div/input'
-    drop_down_box = '//*[@id="el-popper-container-4139"]/div[6]/div/div/div[1]/ul'
-    drop_down_li = '//*[@id="el-popper-container-4139"]/div[6]/div/div/div[1]/ul/li[1]'
+    drop_down_box = '//*[@id="el-popper-container-139"]/div[8]/div/div/div[1]/ul'
+    drop_down_li = '//*[@id="el-popper-container-139"]/div[9]/div/div/div[1]/ul/li[1]'
     member_manage_tab = '//*[@id="tab-orgMember"]'
     link_member_button = '//*[@id="pane-orgMember"]/div/div[1]/div/div/div[1]/button'
     choose_account_name_input = '//*[@id="pane-orgMember"]/div/div[2]/div/div/div[2]/div/form/div/div/div[2]/div/div/input'
@@ -33,36 +35,56 @@ class OrgInfoPage(BasePage):
     search_member_txt = '//*[@id="pane-orgMember"]/div/div[1]/div/div/div[1]/div/input'
     searched_account_name = '//*[@id="pane-orgMember"]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr[1]/td[2]/div'
 
+    admin_lists = '//*[@id="pane-orgAccount"]/div/div/div[2]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr/td[3]/div/div'
     go_back_button = '//*[@id="app"]/section/section/main/div[2]/div/h2/div[2]/button'
-
-
 
     def init_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
             (By.XPATH, self.save_modify_button)))
 
     def new_org_admin(self, admin_account_name):
-        new_org_admin_button = self.driver.find_element(By.XPATH, self.new_org_admin_button)
-        new_org_admin_button.click()
+        # 基础信息--新增组织管理员
+        admin_list = 0
 
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
-            (By.XPATH, self.add_org_admin_name_txt)))
-        add_org_admin_name_txt = self.driver.find_element(By.XPATH, self.add_org_admin_name_txt)
-        link_button = self.driver.find_element(By.XPATH, self.link_button)
+        def inner():
+            nonlocal admin_list
+            new_org_admin_button = self.driver.find_element(By.XPATH, self.new_org_admin_button)
+            new_org_admin_button.click()
 
-        add_org_admin_name_txt.send_keys(admin_account_name)
-        # 点击下拉框账号选择关联对象
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
-            (By.XPATH, self.drop_down_box)))
-        admin_name = self.driver.find_element(By.XPATH, self.drop_down_li)
-        admin_name.click()
-        link_button.click()
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
+                (By.XPATH, self.add_org_admin_name_txt)))
+            add_org_admin_name_txt = self.driver.find_element(By.XPATH, self.add_org_admin_name_txt)
+            link_button = self.driver.find_element(By.XPATH, self.link_button)
 
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
-            (By.XPATH, self.link_admin_success_message)))
-        link_admin_success_message = self.driver.find_element(By.XPATH, self.link_admin_success_message).text.strip()
-        logger.info("the link org's admin success msg: " + link_admin_success_message)
-        assert link_admin_success_message != ''
+            add_org_admin_name_txt.send_keys(admin_account_name)
+            # 点击下拉框账号选择关联对象
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
+                (By.XPATH, self.drop_down_box)))
+            admin_name = self.driver.find_element(By.XPATH, self.drop_down_li)
+            admin_name.click()
+            link_button.click()
+
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
+                (By.XPATH, self.link_admin_success_message)))
+            link_admin_success_message = self.driver.find_element(By.XPATH,
+                                                                  self.link_admin_success_message).text.strip()
+            logger.info("the link org's admin success msg: " + link_admin_success_message)
+            assert link_admin_success_message != ''
+            admin_list += 1
+            print("新增组织管理员+1", admin_list)
+            return admin_list
+        return inner()
+
+    def verify_add(self):
+        #   返回组织管理面板，查看是否添加成功
+        admin_list = self.driver.find_elements(By.XPATH, self.admin_lists)
+        list_len = len(admin_list)
+        msg = []
+        for i in admin_list:
+            msg.append(admin_list.text().split())
+        print(msg)
+
+        return list_len, msg
 
     def click_memeber_link(self):
         member_manage_tab = self.driver.find_element(By.XPATH, self.member_manage_tab)

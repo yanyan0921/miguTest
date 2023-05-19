@@ -16,44 +16,35 @@ class TestOrgAdmin(unittest.TestCase):
     # username, password = 'mengran_1', 'Unity@123'
 
     def setUp(self):
+        username, password = 'mengran_1', 'Unity@123'
         option = webdriver.ChromeOptions()
         option.add_experimental_option("excludeSwitches", ['enable-automation', 'enable-logging'])
         self.driver = webdriver.Chrome(options=option)
         self.driver.get('https://cloud-platform.migu.cn/#/')
         self.driver.maximize_window()
-
-    # # 登录
-    # def test_login(self):
-    #     login_page = Login.Login(self.driver)
-    #     login_page.set_username(username)
-    #     login_page.set_password(password)
-    #     time.sleep(2)
-    #     login_page.sign()
+        login_page = Login.Login(self.driver)
+        login_page.sign(username, password)
 
     # 登录 - > 账号管理tab
     def test_account_manage(self):
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
         time.sleep(10)
         account_page = AccountManagePage.AccountManagePage(self.driver)
         account_page.init_page()
-        account_page.link_dev_account('mengran_2')
+        account_page.link_dev_account('mengran')
         time.sleep(3)
-        account_page.search_linked_dev_accout('mengran_2')
+        msg = account_page.search_linked_dev_accout('mengran')
+        self.assertIn('men', msg)
         time.sleep(3)
         account_page.cancel_link_dev_accout()
         time.sleep(3)
-        account_page.search_canceled_dev_accout('mengran_2')
+        msg2 = account_page.search_canceled_dev_accout('mengran')
+        self.assertIn('暂无', msg2)
 
     #  登录 - > 资源池列表管理
     def test_create_del_pool(self):
         pool_name = "AutoTest-" + utility.random_str(5)
         update_pool_name = "Update-" + utility.random_str(4)
-        # 登录
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
+
         time.sleep(10)
         # 资源池管理页面
         pool_page = PoolManagePage.PoolManagePage(self.driver)
@@ -80,9 +71,7 @@ class TestOrgAdmin(unittest.TestCase):
         project_name = 'test_project' + utility.random_str(5)
         project_description = 'test_project_description' + utility.random_str(5)
         update_project_name = 'test_project' + utility.random_str(1)
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
+
         time.sleep(10)
         # 项目管理页面
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
@@ -103,10 +92,7 @@ class TestOrgAdmin(unittest.TestCase):
         package_name = 'p001.zip'
         increment_package_path = 'D:\DownloadApp\Browser Download\Chrome\p002.zip'
         rename_package = 'rename_' + utility.random_str(5)
-        # 登录
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
+
         time.sleep(10)
         # 项目管理 - test项目详情页面
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
@@ -135,10 +121,7 @@ class TestOrgAdmin(unittest.TestCase):
         launch_params = '-test ' + utility.random_str(1)
         pool_name = 'New_image_GPU_3060'
         update_app_name = 'update_' + utility.random_str(4)
-        # 登录
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
+
         time.sleep(10)
         # 项目管理 - test项目详情页面
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
@@ -169,10 +152,6 @@ class TestOrgAdmin(unittest.TestCase):
         package_params = '-test ' + utility.random_str(2)
         pool_name = 'test_gpu'
 
-        #     # 登录
-        login_page = Login.Login(self.driver)
-        login_page.set_username(username)
-        login_page.set_password(password)
         time.sleep(10)
         # 进入test项目
         project_page = ProjectManagePage.ProjectManagePage(self.driver)

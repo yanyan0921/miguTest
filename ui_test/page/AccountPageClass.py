@@ -29,6 +29,8 @@ class AccountPageClass(BasePage):
     tag = '//*[@id="app"]/section/section/main/div[2]/div/div[2]/div/div[2]/div/div[1]/div/div[1]/div[2]/table/thead/tr/th[1]/div/div'
     dropdown_li = '//*[@id="el-popper-container-3830"]/div[5]/div/div/div[1]/ul/li'
 
+    remove_connect = '//*[@id="app"]/section/section/main/div[2]/div/div[2]/div/div[2]/div/div[1]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr/td[4]/div/div/button/span'
+
     def init_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
             (By.XPATH, self.new_account_button)))
@@ -118,4 +120,12 @@ class AccountPageClass(BasePage):
                 choose_roles[2].click()
             break
         modify_msg = self.driver.switch_to.alert.text
+        # 清理数据，移除组织关联
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
+            (By.XPATH, self.remove_connect)))
+        remove_connect = self.driver.finf_element(By.XPATH, self.remove_connect)
+        for k in range(add_org_connect):
+            remove_connect.click()
+
         return modify_msg
+

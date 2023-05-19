@@ -20,19 +20,10 @@ class Login(BasePage):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(
             (By.XPATH, self.username)))
 
-    # -----此处更改 设置用户名,密码
-    def set_username(self, username):
+    def sign(self, username, pwd):
         name = self.driver.find_element(By.XPATH, self.username)
         name.send_keys(username)
-
-    # 输入密码
-    def set_password(self, pwd):
         password = self.driver.find_element(By.XPATH, self.password)
         password.send_keys(pwd)
-
-
-
-    # 提交登录
-    def sign(self):
         submit = self.driver.find_element(By.XPATH, self.sign_in)
         submit.click()

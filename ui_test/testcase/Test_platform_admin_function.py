@@ -3,13 +3,15 @@ import time
 import unittest
 import sys
 
+import pytest
+
 sys.path.append("../../ui-test")
 sys.path.append("../..")
 sys.path.append("../../")
 from common import ui_common as C, utility as u
 from ui_test.page import LoginClass, AdminHomeMenu, AccountPageClass, AccountAddPage, OrgPageClass, OrgInfoPage
 from common import utility
-
+from ui_test.lib.accountSystem import accountSys
 from selenium import webdriver
 
 logger = logging.getLogger("main")
@@ -28,10 +30,22 @@ class TestCaseInfo(object):
 
 
 class TestPlatformFunction(unittest.TestCase):
-    def setUp(self):
+    # def setUp(self):
+    #     self.driver = webdriver.Chrome()
+    #     self.base_url = C.base_url()
+    #     self.testCaseInfo = TestCaseInfo()
+    #     self.driver.maximize_window()
+
+    @pytest.fixture()
+    def PlatformFunctionModel(self):
+        print('****** inPlatformFunction setup *********')
+        self.testCaseInfo = TestCaseInfo()
+
+    @pytest.fixture()
+    def PlatformFunction(self):
+        print('****** inPlatformFunction setup *********')
         self.driver = webdriver.Chrome()
         self.base_url = C.base_url()
-        self.testCaseInfo = TestCaseInfo()
         self.driver.maximize_window()
 
     def test_delete_account(self):
@@ -63,6 +77,7 @@ class TestPlatformFunction(unittest.TestCase):
 
         add_page = AccountAddPage.AccountAddPageClass(self.driver)
         add_page.init_page()
+        # accountSys.loginPlatform()
         msg = add_page.create_account(create_name, 'mengran.piao+66@unity.cn')
         assert msg != ''
         # 搜索/编辑/删除新增用户
@@ -105,14 +120,9 @@ class TestPlatformFunction(unittest.TestCase):
         account_page.search_account(create_name)
         modify_msg = account_page.org_connect(7)
         self.assertIn('开发者同时关联最多3个组织', modify_msg)
+
         modify_true_msg = account_page.org_connect(3)
         self.assertIn('更新操作成功', modify_true_msg)
-
-
-
-
-
-
 
     # except Exception as err:
     #     self.testCaseInfo.error_info = str(err)
@@ -132,8 +142,9 @@ class TestPlatformFunction(unittest.TestCase):
 
     def test_create_delete_org(self):
         # 组织管理
+        admin_list = 0
         test_org_name = 'AutoOrgName'
-        link_addmin_name = 'ke'
+        link_admin_name = 'ke'
         link_member_name = 'meng'
         # try:
         self.testCaseInfo.start = C.current_time()
@@ -161,7 +172,13 @@ class TestPlatformFunction(unittest.TestCase):
         org_page.click_org_detail(test_org_name)
         org_info_page = OrgInfoPage.OrgInfoPage(self.driver)
         org_info_page.init_page()
-        org_info_page.new_org_admin(link_addmin_name)
+        admin_list = org_info_page.new_org_admin(link_admin_name)()
+
+        org_page.search_org(test_org_name)
+        # 验证添加是否成功
+        list_li, msg = org_info_page.verify_add()
+        self.assertIn(link_admin_name, msg)
+        self.assertEqual(admin_list, list_li)
 
         org_info_page.click_memeber_link()
         org_info_page.add_member_link(link_member_name)
@@ -173,6 +190,8 @@ class TestPlatformFunction(unittest.TestCase):
         org_info_page.back_to_org_page()
         org_page.init_page()
         org_page.search_org(test_org_name)
+
+        # 删除组织
         delete_msg = org_page.delete_org(test_org_name)
         assert delete_msg != ''
         org_page.search_org(test_org_name)
@@ -233,7 +252,7 @@ class TestPlatformFunction(unittest.TestCase):
         random_org_name = 'AutoTestOrg' + u.random_number(5)
         org_info_page.edit_org_name(random_org_name)
         org_info_page.save_update()
-        org_info_page.basic_back_to_org_page()
+        org_info_page.back_to_org_page()
 
         # 修改后返回验修改信息
         org_page.init_page()
@@ -246,6 +265,7 @@ class TestPlatformFunction(unittest.TestCase):
     # finally:
     #     self.testCaseInfo.end = C.current_time()
     #     self.testCaseInfo.secondsDuration = C.time_diff(self.testCaseInfo.start, self.testCaseInfo.end)
+    # 资源管理模块
 
     def tearDown(self):
         self.driver.quit()

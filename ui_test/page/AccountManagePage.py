@@ -8,7 +8,6 @@ import time
 
 
 class AccountManagePage(BasePage):
-
     # 定位元素
     account_manage_menu = '//*[@id="app"]/section/section/aside/ul/li[1]/span'
     new_account_link_button = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[1]/button'
@@ -18,7 +17,8 @@ class AccountManagePage(BasePage):
     cancel_link_button = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr[1]/td[7]/div/button'
     account_name_div = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr[1]/td[2]/div'
     nodata_text_div = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/div/span/div'
-    dev_account = "//span[contains(text(),'mengran_2')]"
+
+    dev_account = '//*[@id="el-popper-container-5337"]/div[6]/div/div/div[1]/ul/li[1]'
     # linked_msg = "//p[contains(text(),'用户已在该组织中')]"
     cancel_button = '//*[@id="app"]/section/section/main/div[2]/div/div[2]/div/div/div[3]/span/button[1]'
     confirm_cancel_button = '/html/body/div[3]/div/div/div[3]/button[2]'
@@ -28,7 +28,7 @@ class AccountManagePage(BasePage):
         初始化页面，点击账号管理，进入账号管理页面
         '''
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.account_manage_menu)))
-        account_manage_menu = self.driver.find_element(By.XPATH,self.account_manage_menu)
+        account_manage_menu = self.driver.find_element(By.XPATH, self.account_manage_menu)
         account_manage_menu.click()
 
     def link_dev_account(self, dev_account):
@@ -37,14 +37,14 @@ class AccountManagePage(BasePage):
         '''
 
         # 等待 关联新账号 按钮的出现，并且点击
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.new_account_link_button)))
-        new_account_link_button = self.driver.find_element(By.XPATH,self.new_account_link_button)
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.new_account_link_button)))
+        new_account_link_button = self.driver.find_element(By.XPATH, self.new_account_link_button)
         new_account_link_button.click()
 
         # 等待输入开发者账号输入框的出现，点击输入开发者账号，选中目标开发者账号，点击关联按钮
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH, self.dev_account_input)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.dev_account_input)))
         dev_account_input = self.driver.find_element(By.XPATH, self.dev_account_input)
-        dev_account_input.click()    
+        dev_account_input.click()
         time.sleep(3)
         dev_account_input.send_keys(dev_account)
 
@@ -54,7 +54,7 @@ class AccountManagePage(BasePage):
         dev_account = self.driver.find_element(By.XPATH, self.dev_account)
         dev_account.click()
 
-        link_button = self.driver.find_element(By.XPATH,self.link_button)
+        link_button = self.driver.find_element(By.XPATH, self.link_button)
         link_button.click()
 
         # WebDriverWait(self.driver,10).until(EC.visibility_of_element_located(
@@ -66,25 +66,24 @@ class AccountManagePage(BasePage):
         # else:
         #     print("执行后续操作")
 
-
     def search_linked_dev_accout(self, dev_account):
         '''
         搜索开发者账号是否存在/被关联上
         '''
         account_search = self.driver.find_element(By.XPATH, self.account_search)
-        account_search.send_keys(dev_account,Keys.TAB)
+        account_search.send_keys(dev_account, Keys.TAB)
         account_name_div_text = self.driver.find_element(By.XPATH, self.account_name_div).text.strip()
-        assert account_name_div_text != ' '
+        return account_name_div_text
+        # assert account_name_div_text != ' '
 
     def cancel_link_dev_accout(self):
         '''
         取消开发者关联
         '''
-        cancel_link_button = self.driver.find_element(By.XPATH,self.cancel_link_button)
+        cancel_link_button = self.driver.find_element(By.XPATH, self.cancel_link_button)
         cancel_link_button.click()
-        confirm_cancel_button = self.driver.find_element(By.XPATH,self.confirm_cancel_button)
+        confirm_cancel_button = self.driver.find_element(By.XPATH, self.confirm_cancel_button)
         confirm_cancel_button.click()
-
 
     def search_canceled_dev_accout(self, dev_account):
         '''
@@ -95,10 +94,8 @@ class AccountManagePage(BasePage):
         time.sleep(1)
         account_search.clear()
         time.sleep(1)
-        account_search.send_keys(dev_account,Keys.TAB)
+        account_search.send_keys(dev_account, Keys.TAB)
         time.sleep(3)
         nodata_text = self.driver.find_element(By.XPATH, self.nodata_text_div).text.strip()
-        assert nodata_text in '暂无数据'
-
-
-
+        return nodata_text
+        # assert nodata_text in '暂无数据'
