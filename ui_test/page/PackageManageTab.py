@@ -5,8 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class PackageManageTab(BasePage):
 
+class PackageManageTab(BasePage):
     # 定位元素
     package_manage_tab = '//*[@id="tab-pro1"]'
     upload_game_packege_button = '//*[@id="pane-pro1"]/div/div[1]/div/div/div[1]/button'
@@ -31,18 +31,16 @@ class PackageManageTab(BasePage):
     incremental_upload_package_input = '//*[@id="pane-pro1"]/div/div[2]/div/div/div[2]/div/form/div[1]/div[1]/div/div/div[3]/div[1]/input'
     upload_success_msg = "//p[contains(text(),'上传成功')]"
 
-
     # 初始化游戏包管理tab
     def init_package_manage_tab(self):
-
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.package_manage_tab)))
         package_manage_tab = self.driver.find_element(By.XPATH, self.package_manage_tab)
         package_manage_tab.click()
 
     # 普通上传 -- 上传游戏包
     def upload_package(self, package_file_path):
-
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.upload_game_packege_button)))
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, self.upload_game_packege_button)))
         # 点击上传游戏包按钮
         upload_game_packege_button = self.driver.find_element(By.XPATH, self.upload_game_packege_button)
         upload_game_packege_button.click()
@@ -50,7 +48,7 @@ class PackageManageTab(BasePage):
         upload_package_input = self.driver.find_element(By.XPATH, self.upload_package_input)
         upload_package_input.send_keys(package_file_path)
         sleep(2)
-         # 输入游戏包版本号
+        # 输入游戏包版本号
         package_version1_num1 = self.driver.find_element(By.XPATH, self.package_version1_num1)
         package_version1_num2 = self.driver.find_element(By.XPATH, self.package_version1_num2)
         package_version1_num3 = self.driver.find_element(By.XPATH, self.package_version1_num3)
@@ -63,20 +61,18 @@ class PackageManageTab(BasePage):
 
         upload_confirm_button = self.driver.find_element(By.XPATH, self.upload_confirm_button)
         upload_confirm_button.click()
-        
-        WebDriverWait(self.driver,60).until(EC.visibility_of_element_located((By.XPATH,self.upload_success_msg)))
+
+        WebDriverWait(self.driver, 60).until(EC.visibility_of_element_located((By.XPATH, self.upload_success_msg)))
         upload_success_msg = self.driver.find_element(By.XPATH, self.upload_success_msg).text.strip()
         assert upload_success_msg != ''
 
-
-
     # 增量上传 -- 上传游戏包
-    def upload_incremental_package(self, increment_file_path, orgional_package_name, rename_package):
-
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.upload_game_packege_button)))
+    def upload_incremental_package(self, increment_file_path, original_package_name, rename_package):
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, self.upload_game_packege_button)))
         # 点击上传游戏包按钮
-        upload_game_packege_button = self.driver.find_element(By.XPATH, self.upload_game_packege_button)
-        upload_game_packege_button.click()
+        upload_game_package_button = self.driver.find_element(By.XPATH, self.upload_game_packege_button)
+        upload_game_package_button.click()
         sleep(2)
         # 勾选增量上传
         incremental_radio = self.driver.find_element(By.XPATH, self.incremental_radio)
@@ -85,12 +81,13 @@ class PackageManageTab(BasePage):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.original_package_select)))
         original_package_select = self.driver.find_element(By.XPATH, self.original_package_select)
         original_package_select.click()
-        original_package_select.send_keys(orgional_package_name, Keys.DOWN, Keys.ENTER)
+        original_package_select.send_keys(original_package_name, Keys.DOWN, Keys.ENTER)
         sleep(1)
         # 重命名
         rename_checkbox = self.driver.find_element(By.XPATH, self.rename_checkbox)
         rename_checkbox.click()
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.incremental_package_input)))
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, self.incremental_package_input)))
         incremental_package_input = self.driver.find_element(By.XPATH, self.incremental_package_input)
         incremental_package_input.click()
         incremental_package_input.send_keys(rename_package)
@@ -111,14 +108,13 @@ class PackageManageTab(BasePage):
 
         upload_confirm_button = self.driver.find_element(By.XPATH, self.upload_confirm_button)
         upload_confirm_button.click()
-        
-        WebDriverWait(self.driver,60).until(EC.visibility_of_element_located((By.XPATH,self.upload_success_msg)))
+
+        WebDriverWait(self.driver, 60).until(EC.visibility_of_element_located((By.XPATH, self.upload_success_msg)))
         upload_success_msg = self.driver.find_element(By.XPATH, self.upload_success_msg).text.strip()
         assert upload_success_msg != ''
 
     # 搜索游戏包
     def search_package(self, package_name):
-        
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.search_package_input)))
         search_package_input = self.driver.find_element(By.XPATH, self.search_package_input)
         search_package_input.click()
@@ -130,7 +126,6 @@ class PackageManageTab(BasePage):
 
     # 删除游戏包
     def del_package(self):
-        
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.del_package_button)))
         del_package_button = self.driver.find_element(By.XPATH, self.del_package_button)
         del_package_button.click()
@@ -139,7 +134,6 @@ class PackageManageTab(BasePage):
 
     # 搜索游戏包是否删除成功
     def search_deleted_package(self, package_name):
-
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.search_package_input)))
         search_package_input = self.driver.find_element(By.XPATH, self.search_package_input)
         search_package_input.click()

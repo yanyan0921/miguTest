@@ -18,7 +18,7 @@ class AccountManagePage(BasePage):
     account_name_div = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/table/tbody/tr[1]/td[2]/div'
     nodata_text_div = '//*[@id="app"]/section/section/main/div[2]/div/div[1]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/div/div/span/div'
 
-    dev_account = '//*[@id="el-popper-container-5337"]/div[6]/div/div/div[1]/ul/li[1]'
+    dev_account = '//*[@id="el-popper-container-8127"]/div[6]/div/div/div[1]/ul/li[1]'
     # linked_msg = "//p[contains(text(),'用户已在该组织中')]"
     cancel_button = '//*[@id="app"]/section/section/main/div[2]/div/div[2]/div/div/div[3]/span/button[1]'
     confirm_cancel_button = '/html/body/div[3]/div/div/div[3]/button[2]'

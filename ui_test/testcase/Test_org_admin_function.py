@@ -16,14 +16,20 @@ class TestOrgAdmin(unittest.TestCase):
     # username, password = 'mengran_1', 'Unity@123'
 
     def setUp(self):
-        username, password = 'mengran_1', 'Unity@123'
+        username = 'mengran_1'
+        password = "Unity@123"
         option = webdriver.ChromeOptions()
         option.add_experimental_option("excludeSwitches", ['enable-automation', 'enable-logging'])
         self.driver = webdriver.Chrome(options=option)
         self.driver.get('https://cloud-platform.migu.cn/#/')
         self.driver.maximize_window()
+        self.driver.implicitly_wait(5)
+        self.addCleanup(self.driver.quit)
         login_page = Login.Login(self.driver)
         login_page.sign(username, password)
+        time.sleep(5)
+        project_page = ProjectManagePage.ProjectManagePage(self.driver)
+        project_page.select_org()
 
     # 登录 - > 账号管理tab
     def test_account_manage(self):
@@ -96,6 +102,9 @@ class TestOrgAdmin(unittest.TestCase):
         time.sleep(10)
         # 项目管理 - test项目详情页面
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
+
+        # 切换到对应组织
+        project_page.select_org()
         project_page.init_project_manage_page()
         project_page.search_project('test')
         project_page.enter_project_details_page()
@@ -113,7 +122,7 @@ class TestOrgAdmin(unittest.TestCase):
         time.sleep(2)
         package_manage_tab.search_deleted_package(rename_package)
 
-    # 登录---》App管理 在org_03组织的test项目下进行
+    # 登录---》App管理 在 mengran_org组织的test项目下进行
     def test_project_manage(self):
         app_name = 'automation_' + utility.random_str(5)
         package_name = 'p001.zip'
@@ -125,6 +134,7 @@ class TestOrgAdmin(unittest.TestCase):
         time.sleep(10)
         # 项目管理 - test项目详情页面
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
+        project_page.select_org()
         project_page.init_project_manage_page()
         project_page.search_project('test')
         project_page.enter_project_details_page()
@@ -151,10 +161,15 @@ class TestOrgAdmin(unittest.TestCase):
         package_path = 'auto/path/' + utility.random_str(3)
         package_params = '-test ' + utility.random_str(2)
         pool_name = 'test_gpu'
+        user01 = 'admin_mengran'
+        pwd01 = 'Unity@123'
+        user02 = 'mengran_1'
+        pwd02 = 'Unity@123'
 
         time.sleep(10)
         # 进入test项目
         project_page = ProjectManagePage.ProjectManagePage(self.driver)
+        project_page.select_org()
         project_page.init_project_manage_page()
         project_page.search_project('test')
         project_page.enter_project_details_page()
@@ -170,9 +185,28 @@ class TestOrgAdmin(unittest.TestCase):
         publish_app_tab.submit_check()
         publish_app_tab.submit_back_check()
         publish_app_tab.submit_check()
+        #     平台审核
+        project_page.quit_login()
+        login_page = Login.Login(self.driver)
+        login_page.sign(user01, pwd01)
+        project_page = ProjectManagePage.ProjectManagePage(self.driver)
+        project_page.platform_check(game_name)
+        project_page.quit_login()
+        login_page = Login.Login(self.driver)
+        login_page.sign(user02, pwd02)
+        project_page = ProjectManagePage.ProjectManagePage(self.driver)
+        project_page.search_project('test')
+        project_page.enter_project_details_page()
+        publish_app_tab = AppPublishTab.AppPublishTab(self.driver)
+        # 找到app详情发布
+        game = publish_app_tab.app_publish(app_name)
+        self.assertEqual(game, game_name)
 
     def tearDown(self):
-        self.driver.quit()
+        try:
+            self.driver.quit()
+        except Exception as e:
+            print('error closing browser:', e)
 
 
 if __name__ == "__main__":

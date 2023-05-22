@@ -7,7 +7,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class AppManageTab(BasePage):
-
     # 定位元素
     app_manage_tab = '//*[@id="tab-pro0"]'
     app_name_input = '//*[@id="app"]/section/section/main/div[2]/div/form/div/div[1]/div[2]/div[2]/div/div[1]/input'
@@ -37,20 +36,18 @@ class AppManageTab(BasePage):
 
     # 初始化App管理tab
     def init_app_manage_tab(self):
-
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_manage_tab)))
-        app_manage_tab = self.driver.find_element(By.XPATH,self.app_manage_tab)
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_manage_tab)))
+        app_manage_tab = self.driver.find_element(By.XPATH, self.app_manage_tab)
         app_manage_tab.click()
-        
+
     # 创建App
     def create_app(self, app_name, package, launch_file_path, launch_params, pool_name):
-
         # 点击创建按钮
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.new_app_button)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.new_app_button)))
         new_app_button = self.driver.find_element(By.XPATH, self.new_app_button)
         new_app_button.click()
         # 输入App名称
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_name_input)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_name_input)))
         app_name_input = self.driver.find_element(By.XPATH, self.app_name_input)
         app_name_input.click()
         app_name_input.send_keys(app_name)
@@ -97,33 +94,29 @@ class AppManageTab(BasePage):
         sleep(2)
 
         # 点击创建按钮
-        WebDriverWait(self.driver,10).until(EC.presence_of_element_located((By.XPATH,self.app_create_button)))
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, self.app_create_button)))
         app_create_button = self.driver.find_element(By.XPATH, self.app_create_button)
         app_create_button.click()
 
-
     # 搜索App是否创建成功
     def search_app(self, app_name):
-
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_search_input)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_search_input)))
         app_search_input = self.driver.find_element(By.XPATH, self.app_search_input)
         app_search_input.click()
         app_search_input.send_keys(app_name, Keys.TAB)
         app_name_text_div = self.driver.find_element(By.XPATH, self.app_name_text_div).text.strip()
         assert app_name_text_div != ''
 
-
     # 编辑App
     def edit_app_info(self, update_app_name):
-
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_operate_icon)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_operate_icon)))
         app_operate_icon = self.driver.find_element(By.XPATH, self.app_operate_icon)
         app_operate_icon.click()
         operation_list_ul = self.driver.find_element(By.XPATH, self.operation_list_ul)
         sleep(2)
         app_edit_option = operation_list_ul.find_element(By.XPATH, self.app_edit_option)
         app_edit_option.click()
-        WebDriverWait(self.driver,10).until(EC.element_to_be_clickable((By.XPATH,self.app_name_input)))
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, self.app_name_input)))
         app_name_input = self.driver.find_element(By.XPATH, self.app_name_input)
         app_name_input.click()
         app_name_input.clear()
@@ -133,8 +126,7 @@ class AppManageTab(BasePage):
 
     # 删除App
     def del_app(self):
-        
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_operate_icon)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_operate_icon)))
         app_operate_icon = self.driver.find_element(By.XPATH, self.app_operate_icon)
         app_operate_icon.click()
         operation_list_ul = self.driver.find_element(By.XPATH, self.operation_list_ul)
@@ -145,16 +137,13 @@ class AppManageTab(BasePage):
         app_del_confirm = self.driver.find_element(By.XPATH, self.app_del_confirm)
         app_del_confirm.click()
 
-
-
     # 搜索App是否删除成功
     def search_deleted_app(self, update_app_name):
-
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.app_search_input)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.app_search_input)))
         app_search_input = self.driver.find_element(By.XPATH, self.app_search_input)
         app_search_input.click()
         app_search_input.clear()
         app_search_input.send_keys(update_app_name, Keys.TAB)
-        WebDriverWait(self.driver,10).until(EC.visibility_of_element_located((By.XPATH,self.no_data_text_div)))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, self.no_data_text_div)))
         no_data_text_div = self.driver.find_element(By.XPATH, self.no_data_text_div).text.strip()
         assert no_data_text_div == '暂无数据'

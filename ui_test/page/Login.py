@@ -22,8 +22,10 @@ class Login(BasePage):
 
     def sign(self, username, pwd):
         name = self.driver.find_element(By.XPATH, self.username)
+        name.clear()
         name.send_keys(username)
         password = self.driver.find_element(By.XPATH, self.password)
+        password.clear()
         password.send_keys(pwd)
         submit = self.driver.find_element(By.XPATH, self.sign_in)
         submit.click()
